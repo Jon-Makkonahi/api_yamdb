@@ -1,31 +1,30 @@
-from api.views import CommentViewSet, ReviewViewSet
 from django.urls import include, path
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
+from rest_framework_simplejwt import views as jwt_views
 
-from .views import (CategoriesViewSet, CreateProfileView, GenresViewSet,
-                    ProfileViewSet, RestoreConfCodeView, TitlesViewSet,
-                    TokenView)
+from .views import (CategoryViewSet, CommentsViewSet, CreateUserViewSet,
+                    GenreViewSet, ReviewsViewSet, TitlesViewSet, UserViewSet,
+                    UserValidationViewSet)
 
-router_v1 = DefaultRouter()
-router_v1.register(r'categories', CategoriesViewSet)
-router_v1.register(r'genres', GenresViewSet)
-router_v1.register(r'titles', TitlesViewSet)
-router_v1.register(r'users', ProfileViewSet, basename='users')
-router_v1.register(
-    r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
-    CommentViewSet,
-    basename='comment'
-)
-router_v1.register(
-    r'titles/(?P<title_id>\d+)/reviews',
-    ReviewViewSet,
-    basename='review'
-)
+router_v1 = SimpleRouter()
+
+router_v1.register('categories', CategoryViewSet)
+router_v1.register('genres', GenreViewSet)
+router_v1.register('titles', TitlesViewSet)
+router_v1.register(r'titles/(?P<title_id>\d+)/reviews',
+                   ReviewsViewSet, basename='reviews')
+router_v1.register('auth/signup', CreateUserViewSet, basename='signup')
+router_v1.register('auth/token', UserValidationViewSet, basename='activate')
+router_v1.register('users', UserViewSet, basename='users')
+router_v1.register(r'titles/(?P<title_id>\d+)/reviews/'
+                   r'(?P<review_id>\d+)/comments',
+                   CommentsViewSet, basename='comments')
 
 
 urlpatterns = [
-    path('v1/auth/restore/', RestoreConfCodeView.as_view()),
-    path('v1/auth/signup/', CreateProfileView.as_view()),
-    path('v1/auth/token/', TokenView.as_view(), name='token_obtain_pair'),
-    path('v1/', include(router_v1.urls))
+    path(
+        'v1/token/',
+        jwt_views.TokenObtainPairView.as_view(),
+        name='token_obtain_pair'),
+    path('v1/', include(router_v1.urls)),
 ]
