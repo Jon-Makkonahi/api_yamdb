@@ -4,6 +4,7 @@
 собирает отзывы пользователей на различные произведения.
 
 ### Авторы:
+- Daniil Bibikov (Jon-Makkonahi) https://github.com/Jon-Makkonahi
 
 ### Технологии:
 - Python
