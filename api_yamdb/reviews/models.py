@@ -47,7 +47,10 @@ class User(AbstractUser):
         default=USER,
         choices=ROLES
     )
-    password = None
+    password = models.TextField(
+        'Пароль',
+        blank=True,
+    )
 
     REQUIRED_FIELDS = ['email']
 
